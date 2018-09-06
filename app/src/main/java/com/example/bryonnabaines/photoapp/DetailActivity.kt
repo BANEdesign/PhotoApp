@@ -6,7 +6,6 @@ import android.support.v7.widget.Toolbar
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.bryonnabaines.photoapp.models.Photo
-import java.io.Serializable
 
 class DetailActivity : AppCompatActivity() {
 
@@ -21,8 +20,8 @@ class DetailActivity : AppCompatActivity() {
 
         //if webURL is not empty do...
         //Glide will load in into the imageView
-        photo?.webformatURL.let{
-            Glide.with(this).load(photo?.webformatURL)
+        photo?.webFormatURL.let{
+            Glide.with(this).load(photo?.webFormatURL)
                     .into(imageView)
         }
         imageView.setOnClickListener{

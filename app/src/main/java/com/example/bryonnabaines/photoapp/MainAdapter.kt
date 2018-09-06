@@ -4,12 +4,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.example.bryonnabaines.photoapp.api.PhotoAPI
 import com.example.bryonnabaines.photoapp.models.Photo
-import java.text.FieldPosition
+import kotlinx.android.synthetic.main.photo_item.view.*
 
 /**
  * Created by bryonnabaines on 1/2/18.
@@ -30,7 +27,7 @@ class MainAdapter(var photos:List<Photo>,
         holder?.favorites?.text = photo.favorites.toString()
         if(photo.previewURL.isNotEmpty()){
             Glide.with(holder?.tags?.context).load(photo.previewURL)
-                    .into(holder?.photo_item)
+                    .into(holder?.photoItem)
         }
     }
 
@@ -53,10 +50,10 @@ class MainAdapter(var photos:List<Photo>,
 
     inner class PhotoViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
 
-        var tags : TextView = itemView.findViewById(R.id.tags)
-        var likes : TextView = itemView.findViewById(R.id.likes)
-        var favorites : TextView = itemView.findViewById(R.id.favorites)
-        var photo_item : ImageView = itemView.findViewById(R.id.photo_item)
+        var tags = itemView.tags
+        var likes = itemView.likes
+        var favorites = itemView.favorites
+        var photoItem = itemView.photo_item
 
         //init says if clicked, set itemView
         init {
@@ -64,16 +61,6 @@ class MainAdapter(var photos:List<Photo>,
                 itemView.setOnClickListener(clickListener)
             }
             itemView.tag = this
-
-            //TODO delete these, this way doesn't work
-//            tags = itemView.findViewById(R.id.tags) as TextView
-//            likes = itemView.findViewById(R.id.likes) as TextView
-//            favorites = itemView.findViewById(R.id.favorites) as TextView
-//            photo_item = itemView.findViewById(R.id.photo_item) as ImageView
-
         }
-
     }
-    //inside the adapter there is the view holder object. The view
-    //holder object extends the RecyclerView.ViewHolder class
 }
