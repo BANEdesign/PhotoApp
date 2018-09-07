@@ -16,20 +16,44 @@ import kotlinx.android.synthetic.main.photo_item.view.*
  */
 //Right after the class name is the constructor followed by the class
 //that it is a subclass of
-class MainAdapter(var photos:List<Photo>,
+class MainAdapter(var photos:MutableList<Photo> = mutableListOf(),
                   var clickListener: View.OnClickListener?) :
         RecyclerView.Adapter<MainAdapter.PhotoViewHolder>() {
 
     override fun onBindViewHolder(holder: PhotoViewHolder?, position: Int) {
         val photo = photos[position]
         holder?.tags?.text = photo.tags
-        holder?.likes?.text = photo.likes.toString()
-        holder?.favorites?.text = photo.favorites.toString()
+        //Added null checks to see if photo is just a placeholder
+        if(photo.likes == null) {
+            holder?.likesLabel?.text = ""
+            holder?.likes?.text = ""
+            holder?.favoritesLabel?.text = ""
+            holder?.favorites?.text = ""
+        }else {
+            holder?.likes?.text = String.format("${photo.likes}")
+            holder?.favorites?.text = String.format("${photo.favorites}")
+        }
+
         if(photo.previewURL.isNotEmpty()){
             Glide.with(holder?.tags?.context).load(photo.previewURL)
                     .into(holder?.photoItem)
+        }else{
+            holder?.photoItem?.setImageBitmap(null)
         }
+        if(photo.id == "") holder?.progressSpinner?.visibility = View.VISIBLE
     }
+
+    fun addLoadingFooter(){
+        photos.add(Photo("",null, null, "", "", ""))
+    }
+
+//    fun removeLoadingFooter(){
+//
+//        val position = itemCount -1
+//        if(!photos.isEmpty() && getPhoto(position).id == "")
+//            photos.removeAt(position)
+//        notifyItemRemoved(position)
+//    }
 
     //A function to get a specif photo
     fun getPhoto(adapterPosition: Int) : Photo {
@@ -51,9 +75,12 @@ class MainAdapter(var photos:List<Photo>,
     inner class PhotoViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
 
         var tags = itemView.tags
+        var likesLabel = itemView.like_label
         var likes = itemView.likes
+        var favoritesLabel = itemView.favorite_label
         var favorites = itemView.favorites
         var photoItem = itemView.photo_item
+        val progressSpinner = itemView.progressSpinner
 
         //init says if clicked, set itemView
         init {

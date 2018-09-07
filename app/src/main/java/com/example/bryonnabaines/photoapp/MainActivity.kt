@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      * them. This will show you what king of data you can retrieve
      */
 
-    var photos : List<Photo>? = null
+    var photos : MutableList<Photo>? = mutableListOf()
     lateinit var recyclerView: RecyclerView
     private lateinit var mainAdapter: MainAdapter
 
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_main)
         val toolbar : Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-
+        fetchPhotos()
 
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -62,12 +62,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             override fun onResponse(call: Call<PhotoList>?, response: Response<PhotoList>?) {
+                Log.d("MAIN ACTIVITY", "Successful response")
+                //todo implement this functionality
+//                mainAdapter?.removeLoadingFooter()
 
-                if(response!!.isSuccessful) response.let { photos = it.body()?.hits
-                mainAdapter = MainAdapter(photos!!, this@MainActivity)
+                if (response!!.isSuccessful) response.let {
+                    photos = it.body()?.hits
+                    mainAdapter = MainAdapter(photos!!, this@MainActivity)
+                    recyclerView.adapter = mainAdapter
                 }
+                mainAdapter.addLoadingFooter()
             }
         }
+
         retriever.getPhotos(callback)
     }
 
@@ -76,7 +83,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val intent = Intent(this, DetailActivity::class.java)
         val holder = view?.tag as MainAdapter.PhotoViewHolder
         intent.putExtra(DetailActivity.PHOTO,
-                mainAdapter.getPhoto(holder.adapterPosition))
+                mainAdapter?.getPhoto(holder.adapterPosition))
         startActivity(intent) //creates intent to start the photo activity
     }
 

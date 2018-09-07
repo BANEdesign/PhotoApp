@@ -7,8 +7,8 @@ import java.io.Serializable
  * the model for the photos retrived from the api
  */
 data class Photo(val id : String,
-                 val likes: Int,
-                 val favorites: Int,
+                 val likes: Int?,
+                 val favorites: Int?,
                  val tags : String,
                  val previewURL : String,
                  val webFormatURL: String) : Serializable

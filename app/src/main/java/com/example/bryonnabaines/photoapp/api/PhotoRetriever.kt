@@ -1,5 +1,6 @@
 package com.example.bryonnabaines.photoapp.api
 
+import android.util.Log
 import com.example.bryonnabaines.photoapp.models.PhotoList
 import retrofit2.Callback
 import retrofit2.Retrofit
@@ -25,5 +26,6 @@ class PhotoRetriever {
     fun getPhotos(callback : Callback<PhotoList>){
         val call = service.getPhotos()
         call.enqueue(callback)
+        Log.d("PHOTO RETRIEVER","requesting photos from api")
     }
 }
