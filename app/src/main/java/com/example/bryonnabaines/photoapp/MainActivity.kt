@@ -13,6 +13,7 @@ import android.view.View
 import com.example.bryonnabaines.photoapp.api.PhotoRetriever
 import com.example.bryonnabaines.photoapp.models.Photo
 import com.example.bryonnabaines.photoapp.models.PhotoList
+import com.example.bryonnabaines.photoapp.ui.EndlessRecyclerOnScrollListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,9 +29,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      */
 
     var photos : List<Photo>? = null
+    lateinit var recyclerView: RecyclerView
     private lateinit var mainAdapter: MainAdapter
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,23 +39,33 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setSupportActionBar(toolbar)
 
 
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
+        recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        //Set an on scrollListener for when the user reaches the end of the page
+        recyclerView.addOnScrollListener(object : EndlessRecyclerOnScrollListener(){
+            override fun onLoadMore(current_page: Int) {
+                fetchPhotos()
+            }
+        })
+    }
+
+    fun fetchPhotos(){
         val retriever = PhotoRetriever()
 
         //This creates a callback object that is send to the retriever. It has methods to respond
         //if the callback fails or succeeds
         val callback = object : Callback<PhotoList> {
+            //TODO see if you can get the metadata from the response, if yes then make a model and reference it here
             override fun onFailure(call: Call<PhotoList>?, t: Throwable?) {
                 Log.e("MainActivity ", "Problems calling API", t)
             }
 
             override fun onResponse(call: Call<PhotoList>?, response: Response<PhotoList>?) {
                 response?.isSuccessful.let { this@MainActivity.photos = response?.body()?.hits
-                mainAdapter = MainAdapter(this@MainActivity.photos!!,
-                        this@MainActivity)
-                recyclerView.adapter = mainAdapter
+                    mainAdapter = MainAdapter(this@MainActivity.photos!!,
+                            this@MainActivity)
+                    recyclerView.adapter = mainAdapter
                 }
             }
         }
