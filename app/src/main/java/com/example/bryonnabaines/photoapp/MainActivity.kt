@@ -62,10 +62,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
             override fun onResponse(call: Call<PhotoList>?, response: Response<PhotoList>?) {
-                response?.isSuccessful.let { this@MainActivity.photos = response?.body()?.hits
-                    mainAdapter = MainAdapter(this@MainActivity.photos!!,
-                            this@MainActivity)
-                    recyclerView.adapter = mainAdapter
+
+                if(response!!.isSuccessful) response.let { photos = it.body()?.hits
+                mainAdapter = MainAdapter(photos!!, this@MainActivity)
                 }
             }
         }
