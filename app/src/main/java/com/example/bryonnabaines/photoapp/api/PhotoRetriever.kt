@@ -23,9 +23,9 @@ class PhotoRetriever {
         service = retrofit.create(PhotoAPI::class.java)
     }
 
-    fun getPhotos(callback : Callback<PhotoList>){
-        val call = service.getPhotos()
+    fun getPhotos(callback : Callback<PhotoList>, page: Int){
+        val call = service.getPhotos(page,10) //todo this would ideally be a const val
         call.enqueue(callback)
-        Log.d("PHOTO RETRIEVER","requesting photos from api")
+        Log.d("PHOTO RETRIEVER","requesting photos from api ")
     }
 }

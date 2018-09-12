@@ -30,11 +30,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     var photos : MutableList<Photo>? = mutableListOf()
     lateinit var recyclerView: RecyclerView
-    private lateinit var mainAdapter: MainAdapter
+    private var mainAdapter: MainAdapter = MainAdapter(this.photos!!, this)
     //Set an on scrollListener for when the user reaches the end of the page
     val contentScrollListener = object : EndlessRecyclerOnScrollListener(){
         override fun onLoadMore(current_page: Int) {
-            fetchPhotos()
+            fetchPhotos(current_page)
+            Log.d("Main Activity", " End of list reached")
         }
     }
 
@@ -43,13 +44,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_main)
         val toolbar : Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        fetchPhotos()
+        fetchPhotos(1)
 
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.addOnScrollListener(contentScrollListener)
     }
 
-    fun fetchPhotos(){
+    fun fetchPhotos( page: Int){
         val retriever = PhotoRetriever()
 
         //This creates a callback object that is send to the retriever. It has methods to respond
@@ -68,14 +70,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 if (response!!.isSuccessful) response.let {
                     photos = it.body()?.hits
                     mainAdapter = MainAdapter(photos!!, this@MainActivity)
-                    mainAdapter.dismissLoadingFooter()
                     recyclerView.adapter = mainAdapter
                 }
                 mainAdapter.addLoadingFooter()
             }
         }
 
-        retriever.getPhotos(callback)
+        retriever.getPhotos(callback, page)
+        Log.d("Main Activity", "Photos being requested page: $page")
     }
 
     override fun onClick(view: View?) {

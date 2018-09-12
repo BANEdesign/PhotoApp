@@ -16,7 +16,7 @@ abstract class EndlessRecyclerOnScrollListener : RecyclerView.OnScrollListener()
     internal var visibleItemCount: Int = 0
     internal var totalItemCount: Int = 0
 
-    private var current_page = 1
+    var current_page = 1
 
     override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
