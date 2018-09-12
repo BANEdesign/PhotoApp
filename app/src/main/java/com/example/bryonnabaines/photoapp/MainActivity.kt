@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 if (response!!.isSuccessful) response.let {
                     photos = it.body()?.hits
                     mainAdapter = MainAdapter(photos!!, this@MainActivity)
+                    mainAdapter.dismissLoadingFooter()
                     recyclerView.adapter = mainAdapter
                 }
                 mainAdapter.addLoadingFooter()

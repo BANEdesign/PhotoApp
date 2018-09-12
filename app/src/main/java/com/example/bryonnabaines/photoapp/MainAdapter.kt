@@ -1,6 +1,7 @@
 package com.example.bryonnabaines.photoapp
 
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,14 +25,16 @@ class MainAdapter(var photos:MutableList<Photo> = mutableListOf(),
         val photo = photos[position]
         holder?.tags?.text = photo.tags
         //Added null checks to see if photo is just a placeholder
-        if(photo.likes == null) {
+        if(photo.id == "") {
             holder?.likesLabel?.text = ""
             holder?.likes?.text = ""
             holder?.favoritesLabel?.text = ""
             holder?.favorites?.text = ""
+            holder?.progressSpinner?.visibility = View.VISIBLE
         }else {
-            holder?.likes?.text = String.format("${photo.likes}")
-            holder?.favorites?.text = String.format("${photo.favorites}")
+            holder?.likes?.text = "${photo.likes}"
+            holder?.favorites?.text = "${photo.favorites}"
+            holder?.progressSpinner?.visibility = View.GONE
         }
 
         if(photo.previewURL.isNotEmpty()){
@@ -40,20 +43,19 @@ class MainAdapter(var photos:MutableList<Photo> = mutableListOf(),
         }else{
             holder?.photoItem?.setImageBitmap(null)
         }
-        if(photo.id == "") holder?.progressSpinner?.visibility = View.VISIBLE
     }
 
     fun addLoadingFooter(){
         photos.add(Photo("",null, null, "", "", ""))
     }
 
-//    fun removeLoadingFooter(){
-//
-//        val position = itemCount -1
-//        if(!photos.isEmpty() && getPhoto(position).id == "")
-//            photos.removeAt(position)
-//        notifyItemRemoved(position)
-//    }
+    fun dismissLoadingFooter(){
+
+        val position = itemCount -1
+        if(!photos.isEmpty() && getPhoto(position).id == "")
+            photos.removeAt(position)
+        notifyItemRemoved(position)
+    }
 
     //A function to get a specif photo
     fun getPhoto(adapterPosition: Int) : Photo {
