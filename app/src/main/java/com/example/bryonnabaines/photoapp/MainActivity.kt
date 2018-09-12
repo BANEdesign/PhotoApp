@@ -31,6 +31,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     var photos : MutableList<Photo>? = mutableListOf()
     lateinit var recyclerView: RecyclerView
     private lateinit var mainAdapter: MainAdapter
+    //Set an on scrollListener for when the user reaches the end of the page
+    val contentScrollListener = object : EndlessRecyclerOnScrollListener(){
+        override fun onLoadMore(current_page: Int) {
+            fetchPhotos()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +47,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-
-        //Set an on scrollListener for when the user reaches the end of the page
-        recyclerView.addOnScrollListener(object : EndlessRecyclerOnScrollListener(){
-            override fun onLoadMore(current_page: Int) {
-                fetchPhotos()
-            }
-        })
     }
 
     fun fetchPhotos(){
